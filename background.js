@@ -4,6 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 /*
+
 // מאזין להודעות שמגיעות מ-content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'messageSent') {
@@ -25,5 +26,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ status: 'message processed' });
     }
 });
-
 */
+

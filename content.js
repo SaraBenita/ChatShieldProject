@@ -1,10 +1,71 @@
 let currentChatName = null;
+let allMessages = []; // מערך לשמירת 5 ההודעות האחרונות
 
 function monitorNewMessages() {
-    const currentChatSelector = '.x78zum5 .x1iyjqo2';
-    const messagesContainerSelector = '[role="row"]';
-    const outgoingMessageSelector = '.message-out';
-    const messageTextSelector = '._ao3e.selectable-text.copyable-text span';
+    const currentChatSelector = 'div[aria-selected="true"] span[title]';
+    const outgoingMessageSelector = '.message-out .selectable-text span';
+
+    // פונקציה לעדכון הצ'אט הנוכחי
+    function updateCurrentChat() {
+        const currentChatElement = document.querySelector(currentChatSelector);
+        if (currentChatElement) {
+            const newChatName = currentChatElement.textContent;
+            if (newChatName !== currentChatName) {
+                currentChatName = newChatName;
+                console.log(`עבר לצ'אט: ${currentChatName}`);
+                allMessages = []; // ניקוי ההודעות כאשר הצ'אט מתחלף
+            }
+        }
+    }
+
+    // מאזין לשינויי צ'אט
+    const chatObserver = new MutationObserver(updateCurrentChat);
+    chatObserver.observe(document.body, { childList: true, subtree: true });
+
+    // פונקציה לקבלת ההודעות האחרונות
+    function displayLastMessages() {
+        const outgoingMessages = document.querySelectorAll(outgoingMessageSelector);
+        const lastMessages = Array.from(outgoingMessages).slice(-5); // לבדוק את זה שזה לא טוב 
+
+        // בדיקה אם נוספו הודעות חדשות
+        lastMessages.forEach((messageElement) => {
+            const messageText = messageElement.textContent.trim();
+            if (!messageElement.getAttribute('data-processed') && messageText) {
+                console.log("הודעה שנשלחה:", messageText);
+                if (currentChatName) {
+                    chrome.runtime.sendMessage({
+                        type: 'analyzeMessage',
+                        message: messageText,
+                        chatName: currentChatName
+                    });
+                }
+                messageElement.setAttribute('data-processed', 'true'); // סימון כמעובד
+            }
+        });
+
+        // עדכון מערך ההודעות
+        allMessages = [...lastMessages].slice(0, 5);
+        console.clear();
+        allMessages.forEach((message, index) => {
+            console.log(`הודעה ${index + 1}: ${message.textContent}`);
+        });
+    }
+
+    // הרצת displayLastMessages כל שנייה לזיהוי הודעות חדשות
+    setInterval(displayLastMessages, 1000);
+}
+
+// הפעלת הפונקציה
+monitorNewMessages();
+
+/*
+let currentChatName = null;
+
+function monitorNewMessages() {
+    const currentChatSelector = 'div[aria-selected="true"] span[title]';
+    const messagesContainerSelector = '#main';
+    const outgoingMessageSelector = '.message-out .selectable-text span';
+   // const messageTextSelector = '._ao3e.selectable-text.copyable-text span';
     
     // פונקציה לעדכון הצ'אט הנוכחי
     function updateCurrentChat() {
@@ -24,28 +85,27 @@ function monitorNewMessages() {
         subtree: true
     });
 
-    const messagesObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList') {
-                const newOutgoingMessages = mutation.target.querySelectorAll(`${outgoingMessageSelector}:not([data-processed])`);
-                newOutgoingMessages.forEach((messageElement) => {
-                    const messageTextElement = messageElement.querySelector(messageTextSelector);
-                    if (messageTextElement && messageTextElement.textContent) {
-                        const messageText = messageTextElement.textContent.trim();
-                        console.log("הודעה שנשלחה:", messageText);
-                        // שליחה רק אם זה בצ'אט הנוכחי
-                        chrome.runtime.sendMessage({
-                            type: 'analyzeMessage',
-                            message: messageText,
-                            chatName: currentChatName
-                        });
-                        // סימון כמעובד
-                        messageElement.setAttribute('data-processed', 'true');
-                    }
-                });
+
+
+    const messagesObserver = new MutationObserver(() => {
+        const newOutgoingMessages = document.querySelectorAll(`${outgoingMessageSelector}:not([data-processed])`);
+        newOutgoingMessages.forEach((messageElement) => {
+            const messageText = messageElement.textContent.trim();
+            if (messageText) {
+                console.log("הודעה שנשלחה:", messageText);
+                if (currentChatName) {
+                    chrome.runtime.sendMessage({
+                        type: 'analyzeMessage',
+                        message: messageText,
+                        chatName: currentChatName
+                    });
+                }
+                messageElement.setAttribute('data-processed', 'true');
             }
         });
     });
+   
+
     // מציאת קונטיינר ההודעות
     const currentChatMessagesContainer = document.querySelector(messagesContainerSelector);
     if (currentChatMessagesContainer) {
@@ -58,3 +118,4 @@ function monitorNewMessages() {
 
 // הפעלת הפונקציה
 monitorNewMessages();
+*/
