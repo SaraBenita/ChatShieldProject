@@ -23,14 +23,16 @@ function monitorNewMessages() {
         childList: true,
         subtree: true
     });
+
     const messagesObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'childList') {
                 const newOutgoingMessages = mutation.target.querySelectorAll(`${outgoingMessageSelector}:not([data-processed])`);
                 newOutgoingMessages.forEach((messageElement) => {
                     const messageTextElement = messageElement.querySelector(messageTextSelector);
-                    if (messageTextElement) {
-                        const messageText = messageTextElement.textContent;
+                    if (messageTextElement && messageTextElement.textContent) {
+                        const messageText = messageTextElement.textContent.trim();
+                        console.log("הודעה שנשלחה:", messageText);
                         // שליחה רק אם זה בצ'אט הנוכחי
                         chrome.runtime.sendMessage({
                             type: 'analyzeMessage',
