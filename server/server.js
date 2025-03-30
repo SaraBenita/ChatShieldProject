@@ -17,9 +17,7 @@ app.use(express.json());
 
 //app.use('/images', express.static(path.join(__dirname, 'images'))); // Serve static images
 
-app.use(cors({ 
-  origin: process.env.CLIENT_URL
-}));
+app.use(cors()); // takes 
 
 
 app.use('/api/messages', messageRoutes);

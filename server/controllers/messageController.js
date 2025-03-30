@@ -5,10 +5,12 @@
 
 // Function to send a new message and get response
 const sendMessage = async (req /*,res*/) => {
+    
     console.log("sara");
-    console.log(req.body.data);
+    let massage = req.body;
+    console.log(massage);
 
-     //לוגיקה!!!
+  
 };
 
 

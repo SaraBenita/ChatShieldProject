@@ -1,19 +1,34 @@
 let currentChatName = null;
-let allMessages = []; // מערך לשמירת 5 ההודעות האחרונות
+let timeEnterToChat = null;
+let messageObserver = null; // שמירה על ה-Observer כדי שנוכל לעצור אותו
 
-function monitorNewMessages() {
+
+let printTime = (time) => {
+    const hours = time.getHours().toString().padStart(2, '0'); 
+    const minutes = time.getMinutes().toString().padStart(2, '0'); 
+    const seconds = time.getSeconds().toString().padStart(2, '0'); 
+    console.log(`⏳ הצ'אט התחלף בזמן: ${hours}:${minutes}:${seconds}`);
+}
+
+let monitorNewMessages = () => {
+
     const currentChatSelector = 'div[aria-selected="true"] span[title]';
-    const outgoingMessageSelector = '.message-out .selectable-text span';
+    const outgoingMessageSelector = '.message-out';
+    const chatContainerSelector = '#main';
 
     // פונקציה לעדכון הצ'אט הנוכחי
     function updateCurrentChat() {
         const currentChatElement = document.querySelector(currentChatSelector);
         if (currentChatElement) {
-            const newChatName = currentChatElement.textContent;
+            const newChatName = currentChatElement.textContent.trim();
             if (newChatName !== currentChatName) {
                 currentChatName = newChatName;
-                console.log(`עבר לצ'אט: ${currentChatName}`);
-                allMessages = []; // ניקוי ההודעות כאשר הצ'אט מתחלף
+                timeEnterToChat = new Date();
+                timeEnterToChat.setSeconds(0, 0); // מאפס את השניות והמילישניות
+                console.log(`🔥 עבר לצ'אט: ${currentChatName}`);
+                printTime(timeEnterToChat);
+
+                observeChatContainer(); // התחל להאזין להודעות בצ'אט החדש
             }
         }
     }
@@ -22,100 +37,86 @@ function monitorNewMessages() {
     const chatObserver = new MutationObserver(updateCurrentChat);
     chatObserver.observe(document.body, { childList: true, subtree: true });
 
-    // פונקציה לקבלת ההודעות האחרונות
-    function displayLastMessages() {
-        const outgoingMessages = document.querySelectorAll(outgoingMessageSelector);
-        const lastMessages = Array.from(outgoingMessages).slice(-5); // לבדוק את זה שזה לא טוב 
 
-        // בדיקה אם נוספו הודעות חדשות
-        lastMessages.forEach((messageElement) => {
-            const messageText = messageElement.textContent.trim();
-            if (!messageElement.getAttribute('data-processed') && messageText) {
-                console.log("הודעה שנשלחה:", messageText);
-                if (currentChatName) {
-                    chrome.runtime.sendMessage({
-                        type: 'analyzeMessage',
-                        message: messageText,
-                        chatName: currentChatName
-                    });
-                }
-                messageElement.setAttribute('data-processed', 'true'); // סימון כמעובד
-            }
-        });
-
-        // עדכון מערך ההודעות
-        allMessages = [...lastMessages].slice(0, 5);
-        console.clear();
-        allMessages.forEach((message, index) => {
-            console.log(`הודעה ${index + 1}: ${message.textContent}`);
-        });
-    }
-
-    // הרצת displayLastMessages כל שנייה לזיהוי הודעות חדשות
-    setInterval(displayLastMessages, 1000);
-}
-
-// הפעלת הפונקציה
-monitorNewMessages();
-
-/*
-let currentChatName = null;
-
-function monitorNewMessages() {
-    const currentChatSelector = 'div[aria-selected="true"] span[title]';
-    const messagesContainerSelector = '#main';
-    const outgoingMessageSelector = '.message-out .selectable-text span';
-   // const messageTextSelector = '._ao3e.selectable-text.copyable-text span';
+    // על מנת לבצע המרה של הטקסט שהתקבל באטריביוט לאובייקט Date()
+    function parseMessageTime(dataPrePlainText) {
+        const timeMatch = dataPrePlainText.match(/\[(\d{2}):(\d{2}), (\d{1,2})\.(\d{1,2})\.(\d{4})\]/);
+        if (!timeMatch) return null;
     
-    // פונקציה לעדכון הצ'אט הנוכחי
-    function updateCurrentChat() {
-        const currentChatElement = document.querySelector(currentChatSelector);
-        if (currentChatElement) {
-            const newChatName = currentChatElement.textContent;
-            // אם שם הצ'אט השתנה
-            if (newChatName !== currentChatName) {
-                currentChatName = newChatName;
-                console.log(`עבר לצ'אט: ${currentChatName}`);
-            }
-        }
+        const [, hours, minutes, day, month, year] = timeMatch.map(Number);
+        return new Date(year, month - 1, day, hours, minutes);
     }
-    const chatObserver = new MutationObserver(updateCurrentChat);
-    chatObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
 
+    function extractMessageText(ariaLabel) {
+        if (!ariaLabel) return null;
+    
+        // מחלקים את הטקסט לפי `&rlm;`
+        const parts = ariaLabel.split('\u200F \u200F'); // '\u200F' זה הקוד של &rlm;
+        
+        if (parts.length < 3) return null; // אם המבנה לא כרגיל, מחזירים null
+        
+        return parts[1].trim(); // החלק האמצעי הוא תוכן ההודעה
+    }
 
+    function sendNewMessagesToServer(mutations) {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                //console.log("🆕 אלמנט חדש התווסף לצ'אט:", node);
+                
+                // חיפוש הודעה יוצאת בתוך ה-node
+                const messageOutElement = node.querySelector(outgoingMessageSelector);
+                if (!messageOutElement) return;
+    
+                // בדיקה אם ההודעה כבר טופלה
+                if (messageOutElement.hasAttribute('data-handled')) return;
+    
+                //console.log('🔍 נמצאה הודעה יוצאת חדשה', messageOutElement);
+    
+                // קבלת הטקסט מה-aria-label
+                const messageText = extractMessageText(messageOutElement.getAttribute('aria-label')?.trim());
+                if (!messageText) return;
+                //console.log(messageText);
+    
+                // מציאת האלמנט עם data-pre-plain-text כדי להוציא זמן ותאריך
+                const dataPrePlainTextElement = messageOutElement.querySelector('[data-pre-plain-text]');
+                if (!dataPrePlainTextElement) return;
+    
+                const messageTime = parseMessageTime(dataPrePlainTextElement.getAttribute('data-pre-plain-text'));
+                //console.log(messageTime);
 
-    const messagesObserver = new MutationObserver(() => {
-        const newOutgoingMessages = document.querySelectorAll(`${outgoingMessageSelector}:not([data-processed])`);
-        newOutgoingMessages.forEach((messageElement) => {
-            const messageText = messageElement.textContent.trim();
-            if (messageText) {
-                console.log("הודעה שנשלחה:", messageText);
-                if (currentChatName) {
-                    chrome.runtime.sendMessage({
-                        type: 'analyzeMessage',
-                        message: messageText,
-                        chatName: currentChatName
-                    });
-                }
-                messageElement.setAttribute('data-processed', 'true');
-            }
+                // אם לא הצלחנו להוציא חותמת זמן או שההודעה נשלחה לפני שנכנסנו לצ'אט - לא נטפל בה
+                if (!messageTime || messageTime < timeEnterToChat) return;
+    
+                console.log(`📩 נשלחה הודעה (${messageTime}): ${messageText}`);
+    
+                chrome.runtime.sendMessage({
+                    type: 'messageSent',
+                    text: messageText,
+                    chatName: currentChatName,
+                    timestamp: messageTime.toISOString()
+                });
+    
+                // סימון ההודעה כ"טופלה" כדי שלא נעבד אותה שוב
+                messageOutElement.setAttribute('data-handled', 'true');
+            });
         });
-    });
-   
+    }
 
-    // מציאת קונטיינר ההודעות
-    const currentChatMessagesContainer = document.querySelector(messagesContainerSelector);
-    if (currentChatMessagesContainer) {
-        messagesObserver.observe(currentChatMessagesContainer, {
-            childList: true,
-            subtree: true
-        });
+    function observeChatContainer() {
+        const chatContainer = document.querySelector(chatContainerSelector);
+        if (!chatContainer) return;
+    
+        console.log("🔄 נמצא קונטיינר הודעות חדש, מאזין להודעות יוצאות...");
+    
+        if (messageObserver) {
+            messageObserver.disconnect();
+        }
+    
+        messageObserver = new MutationObserver(sendNewMessagesToServer);
+        messageObserver.observe(chatContainer, { childList: true, subtree: true });
     }
 }
 
 // הפעלת הפונקציה
 monitorNewMessages();
-*/
+   

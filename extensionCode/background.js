@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         fetch("http://localhost:5000/api/messages/send", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages: [message.text] })
+            body: JSON.stringify(message)
         })
             .then(response => response.json())
             .then(data => {
