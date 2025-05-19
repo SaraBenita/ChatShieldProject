@@ -11,7 +11,7 @@ async function analyzeMessage(message) {
             {
               inputs: message,
               parameters: {
-                candidate_labels: ["Identification","Credentials", "Location", "Routine Activity", "Financial Information", "Social Media Accounts"]
+                candidate_labels: ["Identification","Credentials", "Location", "Routine Activity", "Financial Information", "Social Media Accounts", "Safe"],
               }
             },
             {
@@ -20,7 +20,7 @@ async function analyzeMessage(message) {
           );
 
         // הקטגוריות שלנו
-        const categories = ["Identification","Credentials", "Location", "Routine Activity", "Financial Information", "Social Media Accounts"];
+        const categories = ["Identification","Credentials", "Location", "Routine Activity", "Financial Information", "Social Media Accounts", "Safe"];
         const labels = response.data.labels;
         const scores = response.data.scores;
 

@@ -119,4 +119,34 @@ let monitorNewMessages = () => {
 
 // הפעלת הפונקציה
 monitorNewMessages();
+ 
+
+
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     if (message.type === 'analysisResult') {
+//         console.log('Received analysis result:', message);
+
+//         // יצירת התראה בדפדפן
+//         const notification = document.createElement('div');
+//         notification.style.position = 'fixed';
+//         notification.style.bottom = '20px';
+//         notification.style.right = '20px';
+//         notification.style.backgroundColor = '#f8d7da';
+//         notification.style.color = '#721c24';
+//         notification.style.padding = '15px';
+//         notification.style.border = '1px solid #f5c6cb';
+//         notification.style.borderRadius = '5px';
+//         notification.style.zIndex = '10000';
+//         notification.innerHTML = `
+//             <strong>${message.message}</strong><br>
+//             <small>Details: ${message.details.label}</small>
+//         `;
+//         document.body.appendChild(notification);
+
+//         // הסרת ההתראה לאחר 5 שניות
+//         setTimeout(() => {
+//             notification.remove();
+//         }, 5000);
+//     }
+// });
    

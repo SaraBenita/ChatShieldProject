@@ -3,7 +3,7 @@
     "name": "WhatsApp Privacy Monitor",
     "version": "1.0",
     "description": "Monitors WhatsApp Web messages for sensitive information and alerts users",
-    "permissions": ["storage", "activeTab", "scripting"],
+    "permissions": ["storage", "activeTab", "scripting", "notifications"],
     "host_permissions": ["https://web.whatsapp.com/*"],
     "background": {
       "service_worker": "background.js"
@@ -17,5 +17,11 @@
     ],
     "action": {
       "default_popup": "popup.html"
-    }
-  }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["popup.js", "onboarding.html", "onboarding.js"],
+        "matches": ["<all_urls>"]
+      }
+    ]
+}

@@ -15,7 +15,8 @@ label_mapping = {
     "Location": 2,
     "Routine Activity": 3,
     "Financial Information": 4,
-    "Social Media Accounts": 5
+    "Social Media Accounts": 5,
+    "Safe": 6  # תווית חדשה
 }
 reverse_label_mapping = {v: k for k, v in label_mapping.items()}
 
@@ -44,3 +45,7 @@ if __name__ == "__main__":
     # הפלט של הסקריפט 
     # לבדוקקק
     print(json.dumps(result))
+
+
+# I live on 123 Main Street - financial information instead of location
+# The PIN for my bank card is 4321

@@ -4,10 +4,10 @@ from train_model import train_model
 
 # שלב 1: הכנת הדאטה
 dataset_dict = load_and_prepare_data('../../data/training_messages.json')
-print(dataset_dict)
+#print(dataset_dict)
 
 # שלב 2: טעינת טוקניזר ומודל מוכן מראש (למשל דגם BERT בסיסי)
-checkpoint = "distilbert-base-uncased"
+checkpoint = "bert-base-uncased" # change model
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 
 # המרה של ההודעות למספרים שהמודל מבין
@@ -16,10 +16,9 @@ def tokenize_function(example):
 
 # משתמשים בפונקציה map של אובייקט ה־Dataset כדי להחיל את הפונקציה tokenize_function על כל הדאטה.
 tokenized_datasets = dataset_dict.map(tokenize_function, batched=True)
-print(tokenized_datasets)
 
 # שלב 3: יצירת מודל (למשל עם 5 תוויות)
-model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=6)
+model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=7)
 
 # שלב 4: הגדרת פרמטרי אימון
 training_args = TrainingArguments(

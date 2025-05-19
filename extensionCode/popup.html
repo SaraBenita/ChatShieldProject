@@ -1,18 +1,110 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en" dir="ltr">
 <head>
-    <title>Privacy Monitor</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>התראה על מידע רגיש</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: white;
+            min-width: 400px;
+        }
 
+        .alert-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .alert-header {
+            background-color: #ff4f4f;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .alert-content {
+            padding: 20px;
+        }
+
+        .message-type {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .original-message {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .response-details {
+            font-size: 18px;
+            color: #dc3545;
+            margin: 15px 0;
+        }
+
+        .description {
+            color: #666;
+            margin: 15px 0;
+        }
+
+        #ignoreButton {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: left;
+        }
+
+        #ignoreButton:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
 <body>
-    <h2>Privacy setting</h2>
-    <label>
-        <input type="checkbox" id="enableAlerts" checked>
-        Notification on
-        </label>
+    <div class="alert-container">
+        <div class="alert-header">
+            <span>⚠️</span>
+            <h1>Sensitive Information Detected</h1>
+        </div>
+        <div class="alert-content">
+            <div class="message-type" id="type"></div>
+            <div class="original-message">
+                <strong>Original message:</strong>
+                <p id="message"></p>
+            </div>
+            <div class="response-details" id="response-details"></div>
+            <div class="description" id="details"></div>
+            <button id="ignoreButton">Ignore</button>
+        </div>
+    </div>
     <script src="popup.js"></script>
 </body>
-
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+

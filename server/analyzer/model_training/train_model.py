@@ -1,5 +1,4 @@
-from datasets import DatasetDict
-from transformers import Trainer, TrainingArguments
+from transformers import Trainer
 from metric_utils import compute_metrics
 
 def train_model(dataset_dict, model, training_args,tokenizer):
@@ -19,4 +18,5 @@ def train_model(dataset_dict, model, training_args,tokenizer):
     model.save_pretrained('./my_trained_model')
     # שמירת טוקניזר
     tokenizer.save_pretrained('./my_trained_model')
+
     return model
