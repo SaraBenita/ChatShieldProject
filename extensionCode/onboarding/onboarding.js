@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
+     // מחיקת הטוקן מ-localStorage
+    chrome.storage.sync.remove('token', function () {
+        console.log('Token removed successfully!');
+    });
+    // הפניה לעמוד התחברות
+   switchTab('login');
+
+
     // מאזינים לטאבים
     document.getElementById('loginTab').addEventListener('click', () => switchTab('login'));
     document.getElementById('registerTab').addEventListener('click', () => switchTab('register'));
@@ -217,7 +225,7 @@ async function sendUserDataToServerRegister(user) {
         }
 
         alert('Registration successful!');
-        window.location.href = 'https://web.whatsapp.com/';
+        switchTab('login'); // מעבר לטאב ה-Login
 
     } catch (error) {
         console.error('Error registering user:', error);
@@ -243,7 +251,12 @@ async function sendUserDataToServerLogin(email, password) {
             return;
         }
 
-        alert('login successful!');
+        const data = await response.json();
+        chrome.storage.sync.set({ token: data.token }, function () {
+            console.log('Token saved successfully!');
+        });
+
+        alert(data.message); // 
         window.location.href = 'https://web.whatsapp.com/';
 
     } catch (error) {
@@ -283,3 +296,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+// כאשר נצטרך לקבל את כל הנתונים של המשתמש וזה עושה הגנה על הנתיב
+// דוגמה לשליחת בקשה לנתונים מוגנים
+async function fetchProtectedData() {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('http://localhost:5000/user/protected', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`, // שליחת הטוקן בכותרת Authorization
+        },
+    });
+
+    if (!response.ok) {
+        console.error('Error fetching protected data:', await response.json());
+        return;
+    }
+
+    const data = await response.json();
+    console.log('Protected data:', data);
+}

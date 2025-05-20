@@ -11,17 +11,35 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
-
+function isUserLoggedIn() {
+    return new Promise((resolve) => {
+        chrome.storage.sync.get(['token'], function (result) {
+            console.log('Token retrieved:', result.token);
+            resolve(result.token || null); // מחזיר את הטוקן אם קיים, אחרת null
+        });
+    });
+}
 
 // מאזין להודעות שמגיעות מ-content script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'messageSent') {
-        console.log('Message send: ', message.text);
+chrome.runtime.onMessage.addListener(async (messageInfo, sender, sendResponse) => {
+    const token = await isUserLoggedIn(); // מחכה לתוצאה של isUserLoggedIn ומקבל את הטוקן
+
+    if (!token) {
+        console.log('User is not logged in. Notifications are disabled.');
+        return; // אם המשתמש לא מחובר, לא מבצעים כלום
+    }
+
+    if (messageInfo.type === 'messageSent') {
+        console.log('Message sent: ', messageInfo.text);
+
         // שליחה של ההודעה לשרת לצורך ניתוח
         fetch("http://localhost:5000/messages/send", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(message)
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // הוספת הטוקן לכותרת Authorization
+            },
+            body: JSON.stringify(messageInfo)
         })
             .then(response => {
                 console.log("Raw response:", response);
@@ -32,20 +50,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             })
             .then(data => {
                 if (data.success) {
-                    if(data.label === "Safe") {
+                    if (data.label === "Safe." || data.label === "Safe") {
                         return;
                     }
                     chrome.windows.create({
                         url: `popup.html?message=${encodeURIComponent(data.message)}&label=${encodeURIComponent(data.label)}&explanation=${encodeURIComponent(data.explanation)}`,
                         type: 'popup',
-                        width: 400,
-                        height: 400
+                        width: 650,
+                        height: 550
                     });
                 }
             })
-            .catch(error => console.error("eror: ", error));
-
+            .catch(error => console.error("Error: ", error));
     }
 });
-
-

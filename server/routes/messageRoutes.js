@@ -1,13 +1,14 @@
 import express from 'express';
 import {
-    sendMessage,
+    sendMessage,getMessagesByUser
 } from '../controllers/messageController.js';
+import { authenticateToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 
-router.post('/send', sendMessage);
-
-//http://localhost:5000/api/messages/send
+// נתיב מוגן
+router.post('/send', authenticateToken, sendMessage);
+router.get('/getMessages', authenticateToken, getMessagesByUser);
 
 export default router;

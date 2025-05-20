@@ -90,7 +90,7 @@ let monitorNewMessages = () => {
                 console.log(`📩 נשלחה הודעה (${messageTime}): ${messageText}`);
     
                 chrome.runtime.sendMessage({
-                    type: 'messageSent',
+                    type: 'messageSent', // maybe think if needed
                     text: messageText,
                     chatName: currentChatName,
                     timestamp: messageTime.toISOString()

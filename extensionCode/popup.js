@@ -14,5 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('ignoreButton').addEventListener('click', function() {
         window.close();
     });
+    document.getElementById('logOutButton').addEventListener('click', function() {
+       logoutUser();
+       window.close();
+    });
 });
+
+function logoutUser() {
+    chrome.storage.sync.remove('token', function () {
+        console.log('Token removed successfully!');
+        alert('You have been logged out.');
+    });
+}
 

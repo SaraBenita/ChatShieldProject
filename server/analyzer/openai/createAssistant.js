@@ -11,6 +11,7 @@ If the message does expose problematic information, classify it into one of the 
 - Financial Information: Includes credit card details, bank account numbers, payment information, or any financial data.
 - Social Media Activity: Includes sharing information on social media (e.g., usernames, posts, tags, or personal details) that could harm the user.
 
+
 Here are some examples:
 - "My name is John Doe, and my ID number is 123456789." -> Personal Information
 - "My password is 12345678." -> Personal Information
@@ -34,7 +35,7 @@ async function createAssistant() {
   const assistant = await openai.beta.assistants.create({
     name: "MessageClassifier",
     instructions: basePrompt, // פה תדביקי את כל הפרומט שלך
-    model: "gpt-4o-mini",
+    model: "gpt-4o",
   });
  
   console.log("Assistant ID:", assistant.id);

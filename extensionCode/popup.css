@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: white;
+    min-width: 400px;
+}
+
+.alert-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.alert-header {
+    background-color: #ff4f4f;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.alert-content {
+    padding: 20px;
+}
+
+.message-type {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.original-message {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.response-details {
+    font-size: 18px;
+    color: #dc3545;
+    margin: 15px 0;
+}
+
+.description {
+    color: #666;
+    margin: 15px 0;
+}
+
+#ignoreButton,
+#logOutButton {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    float: left;
+}
+
+#ignoreButton:hover,
+#logOutButton:hover {
+    background-color: #e0e0e0;
+}
+
+.button-container {
+    gap: 10px;
+    display: flex;
+}
