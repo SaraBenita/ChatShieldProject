@@ -1,0 +1,106 @@
+/* General Styles */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 2rem;
+  font-size: 18px;
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #25D366;
+  border-color: #25D366;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1fa855;
+  border-color: #1fa855;
+}
+
+/* Navbar Styles */
+.navbar {
+  padding: 1.2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  margin-bottom: 30px;
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #25D366 !important;
+  padding-left: 1rem;
+}
+
+.nav-link {
+  font-size: 1.2rem;
+  margin: 0 1rem;
+  padding: 0.5rem 1rem !important;
+  color: #333 !important;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #f8f9fa;
+  color: #25D366 !important;
+}
+
+.nav-link.active {
+  background-color: #25D366;
+  color: white !important;
+  font-weight: 500;
+}
+
+.navbar-toggler {
+  border: none;
+  padding: 0.5rem 1rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+/* Form Styles */
+.form-control {
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.form-control:focus {
+  border-color: #25D366;
+  box-shadow: 0 0 0 0.2rem rgba(37, 211, 102, 0.25);
+}
+
+.form-label {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+/* Additional Utility Classes */
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.text-primary {
+  color: #25D366 !important;
+}
+
+.bg-primary {
+  background-color: #25D366 !important;
+}

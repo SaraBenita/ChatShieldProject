@@ -1,14 +1,16 @@
 import express from 'express';
 import {
-    registerUser,loginUser,
+    registerUserByExtension,loginUserByExtension,registerUserByDashboard,loginUserByDashboard,getUserProfile
 } from '../controllers/userController.js';
+import { authenticateToken } from '../middleware/authMiddleware.js';
 
 
 const router = express.Router();
 
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-
-
+router.post('/registerByExtension', registerUserByExtension);
+router.post('/loginByExtension', loginUserByExtension);
+router.post('/registerByDashboard', registerUserByDashboard);
+router.post('/loginByDashboard', loginUserByDashboard);
+router.get('/profile', authenticateToken, getUserProfile);
 export default router;

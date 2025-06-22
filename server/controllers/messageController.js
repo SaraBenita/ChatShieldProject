@@ -11,7 +11,6 @@ const sendMessage = async (req, res) => {
         const timeStemp = req.body.timestamp;
 
 
-
         const analysisResult = await classifyMessage(message);
 
         // תגובות מותאמות לפי קטגוריה
@@ -20,21 +19,24 @@ const sendMessage = async (req, res) => {
         // פיצול הטקסט לשני חלקים לפי הנקודה הראשונה
         const [label, ...rest] = analysisResult.split(/\.(.+)/); // מחלק לפי הנקודה הראשונה בלבד
         const explanation = rest.join('.').trim(); // מחבר את שאר הטקסט (אם יש עוד נקודות)
+        if(label !== "Safe." && label !== "Safe")
+        {
+            // שמירת ההודעה במסד הנתונים
+            const newMessage = new Message({
+                email: userEmail,
+                chatName: chatName,
+                timestamp: timeStemp,
+                message: message,
+                analysis: {
+                    label: label,
+                    explanation: explanation,
+                },
+            });
 
-         // שמירת ההודעה במסד הנתונים
-        const newMessage = new Message({
-            email: userEmail,
-            chatName: chatName,
-            timestamp: timeStemp,
-            message: message,
-            analysis: {
-                label: label,
-                explanation: explanation,
-            },
-        });
 
-        await newMessage.save(); // שמירת המסמך ב-MongoDB
-
+            await newMessage.save(); // שמירת המסמך ב-MongoDB
+        }
+       
         res.json({ success: true, message: responseMessage, label: label, explanation: explanation }); 
     }
     
@@ -46,7 +48,7 @@ const sendMessage = async (req, res) => {
 
 const getMessagesByUser = async (req, res) => {
     try {
-        const userEmail = req.user.email; // שימוש במידע מהטוקן
+        const userEmail = req.query.email; // שימוש במידע מהטוקן
 
         // שליפת כל ההודעות של המשתמש
         const messages = await Message.find({ email: userEmail }).sort({ timestamp: -1 }); // מיון לפי זמן (מהחדש לישן)
