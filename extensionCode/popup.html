@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>התראה על מידע רגיש</title>
+    <title>ChatShield Alert</title>
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -14,6 +14,10 @@
         </div>
         <div class="alert-content">
             <div class="message-type" id="type"></div>
+            <div class="original-message">
+                <strong>Chat with:</strong>
+                <p id="chatName"></p>
+            </div>
             <div class="original-message">
                 <strong>Original message:</strong>
                 <p id="message"></p>

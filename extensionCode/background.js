@@ -33,6 +33,7 @@ chrome.runtime.onMessage.addListener(async (messageInfo, sender, sendResponse) =
         console.log('Message sent: ', messageInfo.text);
 
         // שליחה של ההודעה לשרת לצורך ניתוח
+        /*
         fetch("http://localhost:5000/messages/send", {
             method: "POST",
             headers: {
@@ -41,6 +42,16 @@ chrome.runtime.onMessage.addListener(async (messageInfo, sender, sendResponse) =
             },
             body: JSON.stringify(messageInfo)
         })
+            */
+           
+           fetch("http://host.docker.internal:5000/messages/send", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` // הוספת הטוקן לכותרת Authorization
+                },
+                body: JSON.stringify(messageInfo)
+            })
             .then(response => {
                 console.log("Raw response:", response);
                 if (!response.ok) {
@@ -54,10 +65,13 @@ chrome.runtime.onMessage.addListener(async (messageInfo, sender, sendResponse) =
                         return;
                     }
                     chrome.windows.create({
-                        url: `popup.html?message=${encodeURIComponent(data.message)}&label=${encodeURIComponent(data.label)}&explanation=${encodeURIComponent(data.explanation)}`,
+                        url: `popup.html?message=${encodeURIComponent(data.message)}&label=${encodeURIComponent(data.label)}&explanation=${encodeURIComponent(data.explanation)}&chatName=${encodeURIComponent(data.chatName)}`,
                         type: 'popup',
                         width: 650,
-                        height: 550
+                        height: 550,
+                        top: 100,
+                        left: 100,
+                        focused: true
                     });
                 }
             })

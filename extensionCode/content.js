@@ -125,131 +125,96 @@ let monitorNewMessages = () => {
 function monitorChatList() {
     const chatListSelector = 'div[aria-label="רשימת צ\'אטים"][role="grid"]';
     const topChatSelector = 'div[role="listitem"]:first-child';
-    
-   
 
-    function isSameMessage(messageA, messageB) 
-    {
-           if (!messageA || !messageB) return false;
-           if(messageA.timestamp > messageB.timestamp) return false;
-           console.log("---------------------------------------");
-           console.log("🔍 השוואת הודעות:", messageA, messageB);
-           console.log("---------------------------------------");
-            return (
-                messageA.chatName == messageB.chatName &&
-                messageA.text == messageB.text &&
-                messageA.timestamp == messageB.timestamp
-            );            
+    function isSameMessage(messageA, messageB) {
+        if (!messageA || !messageB) return false;
+        if (messageA.timestamp > messageB.timestamp) return false;
+        return (
+            messageA.chatName === messageB.chatName &&
+            messageA.text === messageB.text &&
+            messageA.timestamp === messageB.timestamp
+        );
     }
 
     function extractTimeFromTopChat(topChat) {
-        
-        // מחפש את אלמנט הזמן בתוך ה-gridcell
         const gridcells = topChat.querySelectorAll('div[role="gridcell"]');
         if (!gridcells.length) return null;
-
-        // הזמן נמצא ב-div השני בתוך ה-gridcell הראשון
         const timeElement = gridcells[0]?.querySelector('div:nth-child(2)');
         if (!timeElement) return null;
-
-        const timeText = timeElement.textContent.trim();
-        console.log("⏰ נמצא זמן:", timeText);
-        return timeText;
+        return timeElement.textContent.trim();
     }
-    
 
     function checkForNewMessages(mutations) {
-        
-        if (isScrolling) {
-            console.log("⛔ מתבצעת גלילה, מתעלם מהשינויים ב-DOM.");
-            return;
-        }
-         
+        if (isScrolling) return;
 
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
                 if (!(node instanceof Element)) return;
 
-                console.log("-----------------------------------------------------");
-                console.log("🆕 אלמנט חדש התווסף:", node);
-
-                 // בדיקה אם רשימת הצ'אטים נטענה
                 const chatListContainer = document.querySelector(chatListSelector);
-                if (!chatListContainer) {
-                    console.log("❌ רשימת הצ'אטים עדיין לא נטענה.");
-                    return;
-                }
+                if (!chatListContainer) return;
 
                 chatListContainer.addEventListener('scroll', () => {
                     isScrolling = true;
-                    // נניח גלילה נגמרת אחרי 200ms של שקט
                     clearTimeout(scrollEndTimeout);
-                        scrollEndTimeout = setTimeout(() => {
-                            isScrolling = false;
-                        }, 1000)
+                    scrollEndTimeout = setTimeout(() => {
+                        isScrolling = false;
+                    }, 1000);
                 });
 
-                console.log("✅ רשימת הצ'אטים נטענה.");  
-
-                
-                // בדיקה אם ה-node הוא הצ'אט העליון
                 const topChat = chatListContainer.querySelector(topChatSelector);
-                if (!topChat || !topChat.contains(node)) {
-                    console.log("❌ ה-Node אינו הצ'אט העליון.");
-                    return;
-                }
-            
-                console.log("✅ ה-Node הוא הצ'אט העליון.");
-                
-                // בדיקה אם הצ'אט העליון מכיל אלמנט של "וי אחד"
+                if (!topChat || !topChat.contains(node)) return;
+
                 const statusCheckElement = topChat.querySelector('span[data-icon="status-check"]');
                 const dStatusCheckElement = topChat.querySelector('span[data-icon="status-dblcheck"]');
-                
-                if (!statusCheckElement && !dStatusCheckElement) 
-                {
-                        isFirstLoad = false;
-                        return;
+                if (!statusCheckElement && !dStatusCheckElement) {
+                    isFirstLoad = false;
+                    return;
                 }
 
                 const chatName = topChat.querySelector('span[title]')?.textContent.trim();
-                const messageElement = topChat.querySelector('span[dir="ltr"]') || topChat.querySelector('span[dir="rtl"]'); // מציאת ההודעה
-                const timestamp = extractTimeFromTopChat(topChat); // חילוץ הטייםסטמפ מהצ'אט העליון
+                const messageElement = topChat.querySelector('span[dir="ltr"]') || topChat.querySelector('span[dir="rtl"]');
+                const timestamp = extractTimeFromTopChat(topChat);
+                if (!chatName || !messageElement || !timestamp) return;
 
-                    if (!chatName || !messageElement || !timestamp) return; 
-                     console.log("⏰ טייםסטמפ מהצ'אט העליון:", timestamp);
-                    
-                    const messageText = messageElement.textContent.trim();
-                    const currentMessage = {
-                        chatName,
-                        text: messageText,
-                        timestamp 
-                    };
+                const messageText = messageElement.textContent.trim();
+                const currentMessage = {
+                    chatName,
+                    text: messageText,
+                    timestamp
+                };
 
-                    // השוואה להודעה האחרונה
-                    if (isSameMessage(lastProcessedMessage,currentMessage)) {
-                        console.log("⚠️ זו אותה הודעה שכבר טופלה. מדלג...");
-                        return;
-                    }
+                if (isSameMessage(lastProcessedMessage, currentMessage)) return;
 
-                    lastProcessedMessage = currentMessage; // עדכון ההודעה האחרונה מעובדת
-                    console.log(`📥 הודעה חדשה נשלחה בצ'אט: ${chatName}`);
-                    console.log(`💬 תוכן ההודעה: ${messageText}`);
+                lastProcessedMessage = currentMessage;
 
-                    if(isFirstLoad)
-                    {
-                        isFirstLoad = false;
-                        return;
-                    }
+                if (isFirstLoad) {
+                    isFirstLoad = false;
+                    return;
+                }
 
-                    processMessage(chatName, messageText);
-                    
+                processMessage(chatName, messageText);
             });
         });
     }
 
-    const chatListObserver = new MutationObserver(checkForNewMessages);
-    chatListObserver.observe(document.body, { childList: true, subtree: true });
+    function tryStartObserver() {
+        const chatListContainer = document.querySelector(chatListSelector);
+        if (!chatListContainer) {
+            console.log("⌛ מחכה שרשימת הצ'אטים תיטען...");
+            setTimeout(tryStartObserver, 500); // מנסה שוב כל 0.5 שניות
+            return;
+        }
+
+        const chatListObserver = new MutationObserver(checkForNewMessages);
+        chatListObserver.observe(chatListContainer, { childList: true, subtree: true });
+
+        console.log("✅ התחיל מעקב אחרי רשימת הצ'אטים.");
+    }
+
+    tryStartObserver(); // התחלה
 }
+
 
 // פונקציה לעיבוד ההודעה
 function processMessage(chatName, messageText) {

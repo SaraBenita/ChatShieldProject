@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_config>
+  <applications>
+    <application name="popup.html">
+      <decor>no</decor>
+      <position>
+        <x>100</x>
+        <y>100</y>
+      </position>
+      <size>
+        <width>650</width>
+        <height>550</height>
+      </size>
+      <fullscreen>no</fullscreen>
+      <maximized>false</maximized>
+    </application>
+  </applications>
+</openbox_config>

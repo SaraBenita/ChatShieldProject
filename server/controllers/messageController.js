@@ -37,7 +37,7 @@ const sendMessage = async (req, res) => {
             await newMessage.save(); // שמירת המסמך ב-MongoDB
         }
        
-        res.json({ success: true, message: responseMessage, label: label, explanation: explanation }); 
+        res.json({ success: true, message: responseMessage, label: label, explanation: explanation, chatName:chatName }); 
     }
     
     catch (error) {

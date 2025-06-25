@@ -1,0 +1,21 @@
+version: '3'
+services:
+  child1:
+    image: chatshield-wa-vnc
+    container_name: child1
+    ports:
+      - 5901:5900
+    volumes:
+      - chrome-profile-child1:/app/chrome-profile
+    restart: unless-stopped
+  child2:
+    image: chatshield-wa-vnc
+    container_name: child2
+    ports:
+      - 5902:5900
+    volumes:
+      - chrome-profile-child2:/app/chrome-profile
+    restart: unless-stopped
+volumes:
+  chrome-profile-child1: null
+  chrome-profile-child2: null

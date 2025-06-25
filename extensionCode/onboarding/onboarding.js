@@ -211,12 +211,18 @@ async function handleRegister() {
 
 async function sendUserDataToServerRegister(user) {
     try {
-        const response = await fetch('http://localhost:5000/user/register', {
+        /*
+        const response = await fetch('http://localhost:5000/user/registerByExtension', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
         });
-
+        */
+        const response = await fetch('http://host.docker.internal:5000/user/registerByExtension', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user),
+        });
         if (!response.ok) {
             const error = await response.json();
             alert(error.message);
@@ -238,7 +244,14 @@ async function sendUserDataToServerRegister(user) {
 
 async function sendUserDataToServerLogin(email, password) {
     try {
-        const response = await fetch('http://localhost:5000/user/login', {
+        /*
+        const response = await fetch('http://localhost:5000/user/loginByExtension', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({email,password}),
+        });
+*/
+        const response = await fetch('http://host.docker.internal:5000/user/loginByExtension', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({email,password}),
