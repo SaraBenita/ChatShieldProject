@@ -6,6 +6,7 @@ import {UserProvider} from './context/userContext';
 import DashboardRouter from './routes/DashboardRouter';
 import UserDashboard from './pages/UserDashboard';
 import SharedDashboard from './pages/SharedDashboard';
+import StatisticsDashboard from './pages/StatisticsDashboard';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardRouter />} />
           <Route path="/my-dashboard" element={<UserDashboard />} />
           <Route path="/shared-dashboard" element={<SharedDashboard />} />
+          <Route path="/statistics" element={<StatisticsDashboard />} />
         </Routes>
       </>
     </Router>

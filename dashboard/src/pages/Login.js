@@ -1,4 +1,4 @@
-import { useState, useContext} from 'react';
+import { useState,useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';  // תיקון הייבוא
 import axios from 'axios';
 import {UserContext} from '../context/userContext';
@@ -6,8 +6,14 @@ import {UserContext} from '../context/userContext';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setIsAuthenticated, setUserEmail } = useContext(UserContext);
+  const { isAuthenticated,setIsAuthenticated, setUserEmail } = useContext(UserContext);
   const navigate = useNavigate();  // הוספת useNavigate
+  // אם כבר מחובר, להפנות ל-dashboard
+    useEffect(() => {
+      if (isAuthenticated) {
+        navigate('/dashboard');
+      }
+    }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

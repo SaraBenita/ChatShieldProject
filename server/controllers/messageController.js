@@ -60,8 +60,61 @@ const getMessagesByUser = async (req, res) => {
     }
 };
 
+const getStatsByUser = async (req, res) => {
+  try {
+    const email = req.query.email;
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Missing email parameter" });
+    }
+
+    const messages = await Message.find({ email });
+
+    const stats = {
+      sensitiveCount: messages.length,
+      labels: {
+        "Personal Information": 0,
+        "Location/Activity": 0,
+        "Financial Information": 0,
+        "Social Media Activity": 0,
+      },
+      hourlyActivity: Array(24).fill(0),
+      dailyRisk: [],
+    };
+
+    const dailyMap = {};
+
+    for (const msg of messages) {
+      const label = msg.analysis?.label?.trim();
+      const timestamp = new Date(msg.timestamp);
+
+      // label count
+      if (label && stats.labels[label] !== undefined) {
+        stats.labels[label]++;
+      }
+
+      // daily risk count
+      const day = timestamp.toISOString().split('T')[0];
+      dailyMap[day] = (dailyMap[day] || 0) + 1;
+
+      // hourly activity
+      const hour = timestamp.getHours();
+      stats.hourlyActivity[hour]++;
+    }
+
+    stats.dailyRisk = Object.entries(dailyMap).map(([date, sensitive]) => ({
+      date,
+      sensitive,
+    }));
+
+    res.json(stats);
+  } catch (error) {
+    console.error("getStatsByUser error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 export {
-    sendMessage,getMessagesByUser
+    sendMessage,getMessagesByUser,getStatsByUser
 };
 
 

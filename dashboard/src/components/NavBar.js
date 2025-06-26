@@ -82,6 +82,14 @@ function NavBar() {
                   </li>
                 )}
                 <li className="nav-item">
+                    <Link 
+                      className={`nav-link ${location.pathname === '/statistics' ? 'active' : ''}`} 
+                      to="/statistics"
+                    >
+                      Statistics
+                    </Link>
+                </li>
+                <li className="nav-item">
                   <button className="nav-link btn btn-link" onClick={handleLogout}>
                     <i className="bi bi-box-arrow-right me-1"></i>
                     Logout
