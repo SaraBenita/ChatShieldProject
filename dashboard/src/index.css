@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.chart-card {
+  min-height: 400px; /* התאימי לפי העין */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
