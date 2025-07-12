@@ -77,10 +77,21 @@ function NavBar() {
                       className={`nav-link ${location.pathname === '/shared-dashboard' ? 'active' : ''}`} 
                       to="/shared-dashboard"
                     >
-                      Linked Accounts
+                      History Linked Accounts
                     </Link>
                   </li>
                 )}
+                 {user?.linkedEmails?.length > 0 && (
+                  <li className="nav-item">
+                    <Link 
+                      className={`nav-link ${location.pathname === '/child-monitoring' ? 'active' : ''}`} 
+                      to="/child-monitoring"
+                    >
+                      Monitoring Linked Accounts
+                    </Link>
+                  </li>
+                )}
+                
                 <li className="nav-item">
                     <Link 
                       className={`nav-link ${location.pathname === '/statistics' ? 'active' : ''}`} 

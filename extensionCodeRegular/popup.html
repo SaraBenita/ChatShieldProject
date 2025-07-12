@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatShield Alert</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="alert-container">
+        <div class="alert-header">
+            <span>⚠️</span>
+            <h1>Sensitive Information Detected</h1>
+        </div>
+        <div class="alert-content">
+            <div class="message-type" id="type"></div>
+            <div class="original-message">
+                <strong>Chat with:</strong>
+                <p id="chatName"></p>
+            </div>
+            <div class="original-message">
+                <strong>Original message:</strong>
+                <p id="message"></p>
+            </div>
+            <div class="response-details" id="response-details"></div>
+            <div class="description" id="details"></div>
+            <div class="button-container">
+                <button id="ignoreButton">Ignore</button>
+                <button id="logOutButton">Logout from chatshield</button>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

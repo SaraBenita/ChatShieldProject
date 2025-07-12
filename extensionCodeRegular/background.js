@@ -32,22 +32,36 @@ chrome.runtime.onMessage.addListener(async (messageInfo, sender, sendResponse) =
 
     if (messageInfo.type === 'messageSent') {
         console.log('Message sent: ', messageInfo.text);
-
-        // שליחה של ההודעה לשרת לצורך ניתוח 
-           fetch("http://host.docker.internal:5000/messages/send", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // הוספת הטוקן לכותרת Authorization
-                },
-                body: JSON.stringify(messageInfo)
-            })
+        fetch("http://localhost:5000/messages/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // הוספת הטוקן לכותרת Authorization
+            },
+            body: JSON.stringify(messageInfo)
+        }) 
             .then(response => {
                 console.log("Raw response:", response);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    if (data.label === "Safe." || data.label === "Safe") {
+                        return;
+                    }
+                    chrome.windows.create({
+                        url: `popup.html?message=${encodeURIComponent(data.message)}&label=${encodeURIComponent(data.label)}&explanation=${encodeURIComponent(data.explanation)}&chatName=${encodeURIComponent(data.chatName)}`,
+                        type: 'popup',
+                        width: 650,
+                        height: 550,
+                        top: 100,
+                        left: 100,
+                        focused: true
+                    });
+                }
             })
             .catch(error => console.error("Error: ", error));
     }

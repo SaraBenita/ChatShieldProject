@@ -37,7 +37,7 @@ function MessageDashboardWrapper({ email, title }) {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">{title}</h2>
+      <h2 className="mb-3 fs-4">{title}</h2>
       {loading && <p>Loading messages...</p>}
       {error && <div className="alert alert-danger">{error}</div>}
       {!loading && messages.length === 0 && <p>No alerts found.</p>}

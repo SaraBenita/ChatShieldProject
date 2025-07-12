@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import messageRoutes from './routes/messageRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import monitorRoutes from './routes/monitorRoutes.js';
 import mongoose from 'mongoose';
 
 
@@ -33,7 +34,7 @@ app.use(cors());
 
 app.use('/messages', messageRoutes);
 app.use('/user', userRoutes);
-
+app.use('/monitor',monitorRoutes);
 
 app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);

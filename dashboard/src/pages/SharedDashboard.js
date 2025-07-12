@@ -14,7 +14,7 @@ function SharedDashboard() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-3">Linked Accounts Dashboard</h2>
+      <h2 className="mb-3">Linked Accounts Massage History</h2>
 
       {user?.linkedEmails?.length > 1 && (
         <div className="mb-3">
