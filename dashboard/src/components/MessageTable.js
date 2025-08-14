@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function MessageTable({ messages }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -8,7 +8,7 @@ function MessageTable({ messages }) {
     const matchText = (str) => str.toLowerCase().includes(searchTerm.toLowerCase());
     return (
       (!categoryFilter || msg.analysis.label === categoryFilter) &&
-      (matchText(msg.timestamp) ||matchText(msg.message) || matchText(msg.chatName) || matchText(msg.analysis.explanation))
+      (matchText(msg.timestamp) || matchText(msg.message) || matchText(msg.chatName) || matchText(msg.analysis.explanation))
     );
   });
 
@@ -40,6 +40,7 @@ function MessageTable({ messages }) {
       <table className="table table-bordered table-hover">
         <thead className="table-light">
           <tr>
+            <th>Phone</th>
             <th>Date</th>
             <th>Chat</th>
             <th>Message</th>
@@ -51,6 +52,7 @@ function MessageTable({ messages }) {
           {filtered.length > 0 ? (
             filtered.map((msg, idx) => (
               <tr key={idx}>
+                <td>{msg.phone}</td>
                 <td>{new Date(msg.timestamp).toLocaleString()}</td>
                 <td>{msg.chatName}</td>
                 <td>{msg.message}</td>

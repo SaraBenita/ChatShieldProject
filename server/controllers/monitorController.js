@@ -2,12 +2,12 @@ import { exec } from 'child_process';
 import util from 'util';
 
 const execAsync = util.promisify(exec);
-const sanitizeEmail = (email) => email.replace(/[@.]/g, '-');
+//const sanitizeEmail = (email) => email.replace(/[@.]/g, '-');
 
 export const startMonitoring = async (req, res) => {
   try {
-    const { email, index } = req.body;
-    const name = sanitizeEmail(email);
+    const { phone, index } = req.body;
+    const name = phone;
     const containerName = `child-monitor-${name}`;
     const volumeName = `volume-${containerName}`;
     const image = 'chatshield-wa-vnc';
@@ -50,8 +50,8 @@ export const startMonitoring = async (req, res) => {
 
 export const stopMonitoring = async (req, res) => {
   try {
-    const { email } = req.body;
-    const name = sanitizeEmail(email);
+    const { phone } = req.body;
+    const name = phone;
     const containerName = `child-monitor-${name}`;
 
     const { stdout: running } = await execAsync(`docker ps --format "{{.Names}}"`);
@@ -69,8 +69,8 @@ export const stopMonitoring = async (req, res) => {
 
 export const getContainerStatus = async (req, res) => {
   try {
-    const { email } = req.query;
-    const name = sanitizeEmail(email);
+    const { phone } = req.query;
+    const name = phone;
     const containerName = `child-monitor-${name}`;
 
     const { stdout } = await execAsync(`docker ps --format "{{.Names}}"`);

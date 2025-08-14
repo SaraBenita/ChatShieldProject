@@ -1,5 +1,5 @@
 // StatisticsDashboard.js
-import React, { useContext, useEffect, useState, useRef, useCallback } from 'react';
+import { useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { UserContext } from '../context/userContext';
 import StatsSummaryCard from '../components/StatsSummaryCard';
 import LabelPieChart from '../components/LabelPieChart';
@@ -9,21 +9,23 @@ import axios from 'axios';
 
 function StatisticsDashboard() {
   const { user } = useContext(UserContext);
-  const [selectedEmail, setSelectedEmail] = useState('');
+  const [selectedPhone, setSelectedPhone] = useState('');
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const intervalRef = useRef();
 
   const fetchStats = useCallback(async () => {
-    if (!selectedEmail) return;
+    if (!selectedPhone) return;
     try {
       setError(null);
       setLoading(true);
       const token = localStorage.getItem('token');
+      const phonesList = [...new Set([user.phone, ...user.linkedPhones])];
+      const params = selectedPhone === 'ALL' ? { phones: phonesList.join(',') } : { phone: selectedPhone };
       const res = await axios.get('http://localhost:5000/messages/stats', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { email: selectedEmail }
+        params
       });
       setStats(res.data);
     } catch (err) {
@@ -32,54 +34,57 @@ function StatisticsDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [selectedEmail]);
+  }, [selectedPhone, user]);
 
   useEffect(() => {
     if (!user) return;
-    if (user.registeredVia?.includes('Extension')) {
-      setSelectedEmail(user.email);
-    } else if (user.registeredVia?.includes('dashboard') && user.linkedEmails?.length > 0) {
-      setSelectedEmail(user.linkedEmails[0]);
-    }
+    setSelectedPhone(user.phone);
   }, [user]);
 
   useEffect(() => {
-    if (!selectedEmail) return;
+    if (!selectedPhone) return;
     fetchStats();
     intervalRef.current = setInterval(fetchStats, 10000);
     return () => clearInterval(intervalRef.current);
-  }, [selectedEmail, fetchStats]);
+  }, [selectedPhone, fetchStats]);
 
-  const getEmailOptions = () => {
+  const getPhoneOptions = () => {
     const options = [];
-    if (user?.registeredVia?.includes('Extension')) {
-      options.push({ label: `My Account (${user.email})`, value: user.email });
+    if (user?.name && user?.phone) {
+      options.push({ label: `${user.name} (${user.phone})`, value: user.phone });
     }
-    if (user?.linkedEmails?.length > 0) {
-      user.linkedEmails.forEach(email => {
-        options.push({ label: email, value: email });
+
+    if (user?.linkedPhonesDetails?.length > 0) {
+      user.linkedPhonesDetails.forEach(({ phone, name }) => {
+        options.push({ label: `${name} (${phone})`, value: phone });
       });
+    }
+
+    if (user?.linkedPhonesDetails?.length > 0) {
+      options.push({ label: 'ALL', value: 'ALL' });
     }
     return options;
   };
 
-  const emailOptions = getEmailOptions();
+  const phoneOptions = getPhoneOptions();
 
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Statistics & Insights</h2>
 
-      {emailOptions.length > 1 && (
+      {phoneOptions.length > 1 && (
         <div className="mb-4">
-          <label htmlFor="emailSelect" className="form-label">Select Account:</label>
+          <label htmlFor="phoneSelect" className="form-label">Select Account:</label>
           <select
-            id="emailSelect"
+            id="phoneSelect"
             className="form-select"
-            value={selectedEmail}
-            onChange={(e) => setSelectedEmail(e.target.value)}
+            value={selectedPhone}
+            onChange={(e) => setSelectedPhone(e.target.value)}
           >
-            {emailOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            {phoneOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.value === user.phone ? `My Account (${user.phone})` : opt.label}
+              </option>
             ))}
           </select>
         </div>
@@ -95,7 +100,6 @@ function StatisticsDashboard() {
             labels={stats.labels}
           />
 
-          {/* Graphs in a single row */}
           <div className="row g-4 mt-4 mb-5">
             <div className="col-md-4">
               <div className="bg-white rounded shadow-sm p-3 border h-100 chart-card">

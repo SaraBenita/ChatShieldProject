@@ -1,12 +1,11 @@
 // DailyRiskChart.js
-import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend } from 'chart.js';
 
 Chart.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 function DailyRiskChart({ dataPoints }) {
-   if (!dataPoints) {
+  if (!dataPoints) {
     return null; // אפשר גם להחזיר ספינר/טקסט זמני
   }
   const data = {

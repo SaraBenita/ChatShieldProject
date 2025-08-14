@@ -9,7 +9,7 @@ const EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 // יצירת טוקן
 export function generateToken(user) {
     return jwt.sign(
-        { email: user.email }, // payload
+        { phone: user.phone }, // payload
         SECRET_KEY, // מפתח סודי
         { expiresIn: EXPIRES_IN } // זמן תפוגה
     );

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Welcome to WhatsApp Privacy Monitor</title>
     <link rel="stylesheet" href="onboarding.css">
 </head>
+
 <body>
     <div class="container">
         <div class="tabs">
@@ -16,9 +18,9 @@
         <div id="loginForm" class="form-container active">
             <h2>Welcome Back!</h2>
             <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" required>
-                <div class="error-message" id="loginEmailError"></div>
+                <label for="loginPhone">Phone Number</label>
+                <input type="tel" id="loginPhone" required>
+                <div class="error-message" id="loginPhoneError"></div>
             </div>
             <div class="form-group">
                 <label for="loginPassword">Password</label>
@@ -37,9 +39,9 @@
                 <div class="error-message" id="registerNameError"></div>
             </div>
             <div class="form-group">
-                <label for="registerEmail">Email</label>
-                <input type="email" id="registerEmail" required>
-                <div class="error-message" id="registerEmailError"></div>
+                <label for="registerPhone">Phone Number</label>
+                <input type="tel" id="registerPhone" required>
+                <div class="error-message" id="registerPhoneError"></div>
             </div>
             <div class="form-group">
                 <label for="registerPassword">Password</label>
@@ -48,14 +50,14 @@
             </div>
 
             <div class="form-group">
-                <label for="linkedEmails">Linked Emails (optional)</label>
-                <div id="linkedEmailsContainer" class="linked-emails-container">
-                    <div class="email-input-wrapper">
-                        <input type="email" class="linkedEmail" placeholder="Enter email to link">
-                        <button type="button" class="add-email-button" id="addEmailButton">+</button>
+                <label for="linkedPhones">Linked Phone Numbers (optional)</label>
+                <div id="linkedPhonesContainer" class="linked-phones-container">
+                    <div class="phone-input-wrapper">
+                        <input type="tel" class="linkedPhone" placeholder="Enter phone to link">
+                        <button type="button" class="add-phone-button" id="addPhoneButton">+</button>
                     </div>
                 </div>
-                <div class="error-message" id="linkedEmailsError"></div>
+                <div class="error-message" id="linkedPhonesError"></div>
             </div>
 
             <div class="privacy-notice">
@@ -68,8 +70,8 @@
                     <div class="tooltip">Please read and accept the terms first</div>
                 </div>
             </div>
-            
-            <!-- Modal -->
+
+            <!-- Modal for Terms -->
             <div id="termsModal" class="modal">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -78,26 +80,36 @@
                     </div>
                     <div class="modal-body">
                         <h3>Purpose</h3>
-                        <p>This Extension is designed to help users monitor outgoing WhatsApp messages for potentially risky or sensitive content. Its intended use is for parental supervision or other responsible monitoring in accordance with applicable laws.</p>
-            
+                        <p>This Extension is designed to help users monitor outgoing WhatsApp messages for potentially
+                            risky or sensitive content. Its intended use is for parental supervision or other
+                            responsible monitoring in accordance with applicable laws.</p>
+
                         <h3>User Consent</h3>
-                        <p>By using this Extension, you confirm that you are the legal owner or have proper authorization to monitor the WhatsApp account being connected.</p>
-            
+                        <p>By using this Extension, you confirm that you are the legal owner or have proper
+                            authorization to monitor the WhatsApp account being connected.</p>
+
                         <h3>Data Handling</h3>
-                        <p>The Extension analyzes outgoing messages locally or on a connected server, identifying content that may be considered sensitive or risky. No messages are shared with third parties unless explicitly stated and agreed upon.</p>
-            
+                        <p>The Extension analyzes outgoing messages locally or on a connected server, identifying
+                            content that may be considered sensitive or risky. No messages are shared with third parties
+                            unless explicitly stated and agreed upon.</p>
+
                         <h3>Privacy</h3>
-                        <p>We respect your privacy. No personal data will be sold, rented, or misused. Any collected data is used solely to improve the functionality and accuracy of the Extension.</p>
-            
+                        <p>We respect your privacy. No personal data will be sold, rented, or misused. Any collected
+                            data is used solely to improve the functionality and accuracy of the Extension.</p>
+
                         <h3>Responsibility</h3>
-                        <p>You are fully responsible for how you use the Extension. Misuse, including unauthorized surveillance or violation of privacy laws, is strictly prohibited.</p>
-            
+                        <p>You are fully responsible for how you use the Extension. Misuse, including unauthorized
+                            surveillance or violation of privacy laws, is strictly prohibited.</p>
+
                         <h3>No Guarantee</h3>
-                        <p>While we strive for accuracy, we do not guarantee that all risky or sensitive messages will be correctly detected. This Extension is intended as a helpful tool, not a replacement for human judgment.</p>
-            
+                        <p>While we strive for accuracy, we do not guarantee that all risky or sensitive messages will
+                            be correctly detected. This Extension is intended as a helpful tool, not a replacement for
+                            human judgment.</p>
+
                         <h3>Modifications</h3>
-                        <p>These terms may be updated from time to time. Continued use of the Extension after changes means you accept the updated terms.</p>
-            
+                        <p>These terms may be updated from time to time. Continued use of the Extension after changes
+                            means you accept the updated terms.</p>
+
                         <p class="warning">If you do not agree to these terms, please do not use this Extension.</p>
                     </div>
                     <div class="modal-footer">
@@ -106,9 +118,11 @@
                     </div>
                 </div>
             </div>
+
             <button id="registerButton">Create Account</button>
         </div>
     </div>
     <script src="onboarding.js"></script>
 </body>
+
 </html>

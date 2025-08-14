@@ -1,29 +1,29 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';  // תיקון הייבוא
 import axios from 'axios';
-import {UserContext} from '../context/userContext';
+import { UserContext } from '../context/userContext';
 
 function Register() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const { setIsAuthenticated, setUserEmail } = useContext(UserContext);
+  const { setIsAuthenticated, setUserPhone } = useContext(UserContext);
   const navigate = useNavigate();  // הוספת useNavigate
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/user/registerByDashboard', { name, email, password, registrationDate: new Date() });
+      const response = await axios.post('http://localhost:5000/user/registerByDashboard', { name, phone, password, registrationDate: new Date() });
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userEmail', email); // הוסיפי שורה זו
+      localStorage.setItem('userPhone', phone); // הוסיפי שורה זו
       setIsAuthenticated(true); // עדכון הסטטוס של המשתמש
-      setUserEmail(email);
+      setUserPhone(phone);
       navigate('/dashboard'); // נווט לדף הלוח בקרה לאחר ההרשמה המוצלחת
     } catch (error) {
       alert('Registration failed: ' + error.response.data.message);
     }
   };
-  
+
 
   return (
     <>
@@ -46,15 +46,9 @@ function Register() {
                     />
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="registerEmail" className="mb-3">Email</label>
-                    <input
-                      id="registerEmail"
-                      type="email"
-                      className="form-control py-2"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                    <label htmlFor="registerPhone" className="mb-3">Phone Number</label>
+                    <input id="registerPhone" type="tel" className="form-control py-2" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+
                   </div>
                   <div className="form-group mb-5">
                     <label htmlFor="registerPassword" className="mb-3">Password</label>

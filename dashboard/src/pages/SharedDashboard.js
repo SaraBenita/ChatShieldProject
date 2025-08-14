@@ -1,45 +1,45 @@
-import React, { useContext, useEffect, useState } from 'react';
+// SharedDashboard.js
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/userContext';
 import MessageDashboardWrapper from '../components/MessageDashboardWrapper';
 
 function SharedDashboard() {
   const { user } = useContext(UserContext);
-  const [selectedEmail, setSelectedEmail] = useState('');
+  const [selectedPhone, setSelectedPhone] = useState('');
 
   useEffect(() => {
-    if (user?.linkedEmails?.length > 0) {
-      setSelectedEmail(user.linkedEmails[0]);
+    if (user?.linkedPhonesDetails?.length > 0) {
+      setSelectedPhone(user.linkedPhonesDetails[0].phone);
     }
   }, [user]);
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-3">Linked Accounts Massage History</h2>
+      <h2 className="mb-3">Linked Accounts Message History</h2>
 
-      {user?.linkedEmails?.length > 1 && (
+      {user?.linkedPhonesDetails?.length > 1 && (
         <div className="mb-3">
-          <label htmlFor="emailSelect" className="form-label">
+          <label htmlFor="phoneSelect" className="form-label">
             Select account to view:
           </label>
           <select
-            id="emailSelect"
+            id="phoneSelect"
             className="form-select"
-            value={selectedEmail}
-            onChange={(e) => setSelectedEmail(e.target.value)}
+            value={selectedPhone}
+            onChange={(e) => setSelectedPhone(e.target.value)}
           >
-            {user.linkedEmails.map((email) => (
-              <option key={email} value={email}>
-                {email}
-              </option>
+            {user.linkedPhonesDetails.map(({ phone, name }) => (
+              <option key={phone} value={phone}>{name} ({phone})</option>
             ))}
+            <option value="ALL">ALL</option>
           </select>
         </div>
       )}
 
-      {selectedEmail && (
+      {selectedPhone && (
         <MessageDashboardWrapper
-          title={`Messages for ${selectedEmail}`}
-          email={selectedEmail}
+          title={`Messages for ${selectedPhone}`}
+          phones={selectedPhone === 'ALL' ? user.linkedPhonesDetails.map(p => p.phone) : [selectedPhone]}
         />
       )}
     </div>

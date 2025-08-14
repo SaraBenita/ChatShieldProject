@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import MessageTable from './MessageTable';
 
-function MessageDashboardWrapper({ email, title }) {
+function MessageDashboardWrapper({ phones, title }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ function MessageDashboardWrapper({ email, title }) {
       const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:5000/messages/getMessages', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { email }
+        params: { phones: phones.join(',') },
       });
       setMessages(response.data.messages || []);
     } catch (err) {
@@ -22,18 +22,15 @@ function MessageDashboardWrapper({ email, title }) {
     } finally {
       setLoading(false);
     }
-  }, [email]);
+  }, [phones]);
 
   useEffect(() => {
-    if (email !== null) {
-      setLoading(true);
-      fetchMessages();
-
-      intervalRef.current = setInterval(fetchMessages, 5000);
-
-      return () => clearInterval(intervalRef.current);
-    }
-  }, [email, fetchMessages]);
+    if (!phones || phones.length === 0) return;
+    setLoading(true);
+    fetchMessages();
+    intervalRef.current = setInterval(fetchMessages, 5000);
+    return () => clearInterval(intervalRef.current);
+  }, [phones, fetchMessages]);
 
   return (
     <div className="container mt-4">

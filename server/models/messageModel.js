@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
-    email: { type: String, required: true }, // כתובת האימייל של המשתמש
+    phone: { type: String, required: true }, // טלפון של המשתמש
     chatName: { type: String, required: true }, // שם הצ'אט
     timestamp: { type: Date, required: true }, // זמן שליחת ההודעה
     message: { type: String, required: true }, // תוכן ההודעה
@@ -11,6 +11,6 @@ const messageSchema = new mongoose.Schema({
     },
 });
 
-const Message = mongoose.model('Message', messageSchema,'usersMessages'); // שמירת המודל במסד הנתונים בשם "messages"
+const Message = mongoose.model('Message', messageSchema, 'usersMessages'); // שמירת המודל במסד הנתונים בשם "messages"
 
 export default Message;
