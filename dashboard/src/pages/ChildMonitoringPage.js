@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UserContext } from '../context/userContext';
 
 function ChildMonitoringPage() {
-  const { user } = useContext(UserContext);
+  const { user, refreshUser } = useContext(UserContext);
   const [visibleVNCs, setVisibleVNCs] = useState({});
   const [containerStatuses, setContainerStatuses] = useState({});
   const token = localStorage.getItem('token');
@@ -28,6 +28,16 @@ function ChildMonitoringPage() {
       fetchStatuses();
     }
   }, [user, fetchStatuses]);
+
+  if (!user) {
+    return (
+      <div className="container mt-5">
+        <div className="alert alert-info text-center">
+          Loading user info...
+        </div>
+      </div>
+    );
+  }
 
   const startMonitoring = async (phone, index) => {
     if (containerStatuses[phone]) {

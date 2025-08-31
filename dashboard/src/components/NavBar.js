@@ -81,6 +81,14 @@ function NavBar() {
                     </Link>
                   </li>
                 )}
+                <li className="nav-item">
+                  <Link
+                    className={`nav-link ${location.pathname === '/register-child' ? 'active' : ''}`}
+                    to="/register-child"
+                  >
+                    Register Child
+                  </Link>
+                </li>
                 {user?.linkedPhones?.length > 0 && (
                   <li className="nav-item">
                     <Link

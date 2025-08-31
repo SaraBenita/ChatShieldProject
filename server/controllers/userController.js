@@ -83,7 +83,7 @@ async function loginUserByExtension(req, res) {
 }
 
 async function registerUserByDashboard(req, res) {
-    const { name, phone, password, registrationDate } = req.body;
+    const { name, phone, password, registrationDate, linkedPhones } = req.body;
 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -98,13 +98,16 @@ async function registerUserByDashboard(req, res) {
             }
         }
 
+        const linkedPhonesArr = Array.isArray(linkedPhones) ? linkedPhones : (linkedPhones ? [linkedPhones] : []);
+
+
         // יצירת משתמש חדש
         const newUser = new User({
             name: name,
             phone: phone,
             password: hashedPassword,
             registeredVia: ["Dashboard"], // אם לא נשלח, ישמור כרשימה ריקה
-            linkedPhones: [],
+            linkedPhones: linkedPhonesArr,
             privacyAccepted: false,
             registrationDate: registrationDate
         });

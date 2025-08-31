@@ -12,7 +12,7 @@ export function UserProvider({ children }) {
     const token = localStorage.getItem("token");
     if (!token || !userPhone) {
       setUser(null);
-      setIsAuthenticated(false); // הוסיפי שורה זו
+      setIsAuthenticated(false);
       return;
     }
 
@@ -21,15 +21,24 @@ export function UserProvider({ children }) {
       params: { phone: userPhone }
     }).then((res) => {
       setUser(res.data.user);
-      setIsAuthenticated(true); // הוסיפי שורה זו
+      setIsAuthenticated(true);
       console.log('User profile fetched:', res.data.user);
     }).catch((error) => {
       setUser(null);
-      setIsAuthenticated(false); // הוסיפי שורה זו
+      setIsAuthenticated(false);
     });
   }, [userPhone]);
 
-  // חשוב: להעביר את כל הערכים בפרובידר
+  const refreshUser = async () => {
+    const token = localStorage.getItem('token');
+    await axios.get('http://localhost:5000/user/profile', {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { phone: userPhone }
+    }).then((res) => {
+      setUser(res.data.user);
+    });
+  };
+
   return (
     <UserContext.Provider value={{
       user,
@@ -37,7 +46,8 @@ export function UserProvider({ children }) {
       isAuthenticated,
       setIsAuthenticated,
       userPhone,
-      setUserPhone
+      setUserPhone,
+      refreshUser
     }}>
       {children}
     </UserContext.Provider>

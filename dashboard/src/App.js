@@ -8,6 +8,7 @@ import UserDashboard from './pages/UserDashboard';
 import SharedDashboard from './pages/SharedDashboard';
 import StatisticsDashboard from './pages/StatisticsDashboard';
 import ChildMonitoringPage from './pages/ChildMonitoringPage';
+import RegisterChild from './pages/RegisterChild';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<DashboardRouter />} />
-          <Route path="/my-dashboard" element={<UserDashboard />} />
+          <Route path="/register-child" element={<RegisterChild />} />          <Route path="/my-dashboard" element={<UserDashboard />} />
           <Route path="/shared-dashboard" element={<SharedDashboard />} />
           <Route path="/child-monitoring" element={<ChildMonitoringPage />} />
           <Route path="/statistics" element={<StatisticsDashboard />} />
