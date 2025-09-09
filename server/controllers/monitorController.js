@@ -2,7 +2,6 @@ import { exec } from 'child_process';
 import util from 'util';
 
 const execAsync = util.promisify(exec);
-//const sanitizeEmail = (email) => email.replace(/[@.]/g, '-');
 
 export const startMonitoring = async (req, res) => {
   try {
@@ -14,12 +13,10 @@ export const startMonitoring = async (req, res) => {
     const hostPortVNC = 5900 + index;
     const hostPortWeb = 6080 + index;
 
-    // בדיקה אם קונטיינר קיים (גם אם הוא לא רץ)
     const { stdout: allContainers } = await execAsync(`docker ps -a --format "{{.Names}}"`);
     const containerExists = allContainers.split('\n').includes(containerName);
 
     if (containerExists) {
-      // בדיקה אם הקונטיינר כבר רץ
       const { stdout: runningContainers } = await execAsync(`docker ps --format "{{.Names}}"`);
       const isRunning = runningContainers.split('\n').includes(containerName);
 
@@ -27,12 +24,10 @@ export const startMonitoring = async (req, res) => {
         return res.status(400).json({ error: 'Container already running' });
       }
 
-      // אם הקונטיינר קיים אבל לא רץ → הרץ אותו
       await execAsync(`docker start ${containerName}`);
       return res.json({ message: 'Monitoring resumed' });
     }
 
-    // יצירת Volume אם צריך
     await execAsync(`docker volume create ${volumeName}`);
 
     const volumeFlag = `-v ${volumeName}:/app/chrome-profile`;

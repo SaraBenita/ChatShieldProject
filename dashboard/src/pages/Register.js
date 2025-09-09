@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';  // תיקון הייבוא
+import { useNavigate } from 'react-router-dom';  
 import axios from 'axios';
 import { UserContext } from '../context/userContext';
 
@@ -8,17 +8,17 @@ function Register() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const { setIsAuthenticated, setUserPhone } = useContext(UserContext);
-  const navigate = useNavigate();  // הוספת useNavigate
+  const navigate = useNavigate();  
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/user/registerByDashboard', { name, phone, password, registrationDate: new Date() });
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userPhone', phone); // הוסיפי שורה זו
-      setIsAuthenticated(true); // עדכון הסטטוס של המשתמש
+      localStorage.setItem('userPhone', phone); 
+      setIsAuthenticated(true); 
       setUserPhone(phone);
-      navigate('/dashboard'); // נווט לדף הלוח בקרה לאחר ההרשמה המוצלחת
+      navigate('/dashboard'); 
     } catch (error) {
       alert('Registration failed: ' + error.response.data.message);
     }

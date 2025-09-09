@@ -1,4 +1,3 @@
-// SharedDashboard.js
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/userContext';
 import MessageDashboardWrapper from '../components/MessageDashboardWrapper';

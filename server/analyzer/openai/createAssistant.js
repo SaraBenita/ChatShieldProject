@@ -34,19 +34,19 @@ Classify the following WhatsApp message put a dot after and Add a sentence that 
 async function createAssistant() {
   const assistant = await openai.beta.assistants.create({
     name: "MessageClassifier",
-    instructions: basePrompt, // פה תדביקי את כל הפרומט שלך
+    instructions: basePrompt, 
     model: "gpt-4o",
   });
  
   console.log("Assistant ID:", assistant.id);
 }
 
-const ASSISTANT_ID = "asst_kEiKIjCSfqsJNDUyAPVsYD19"; // שימי כאן את האמיתי
+const ASSISTANT_ID = "asst_kEiKIjCSfqsJNDUyAPVsYD19"; 
 
 async function updateAssistant() {
   try {
     const updatedAssistant = await openai.beta.assistants.update(ASSISTANT_ID, {
-      instructions: basePrompt, // הפרומט החדש
+      instructions: basePrompt, 
     });
 
     console.log("Assistant updated successfully:", updatedAssistant);

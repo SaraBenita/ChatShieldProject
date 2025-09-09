@@ -1,4 +1,4 @@
-// HourlyActivityChart.js
+
 import { Bar } from 'react-chartjs-2';
 import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 
@@ -6,7 +6,7 @@ Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function HourlyActivityChart({ hourlyData }) {
     if (!hourlyData) {
-    return null; // אפשר גם להחזיר ספינר/טקסט זמני
+    return null; 
   }
   const data = {
     labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),

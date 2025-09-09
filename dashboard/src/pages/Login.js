@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';  // תיקון הייבוא
+import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 import { UserContext } from '../context/userContext';
 
@@ -7,8 +7,8 @@ function Login() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const { isAuthenticated, setIsAuthenticated, setUserPhone } = useContext(UserContext);
-  const navigate = useNavigate();  // הוספת useNavigate
-  // אם כבר מחובר, להפנות ל-dashboard
+  const navigate = useNavigate();  
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
@@ -21,9 +21,9 @@ function Login() {
       const response = await axios.post('http://localhost:5000/user/loginByDashboard', { phone, password });
       console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userPhone', phone); // הוסיפי שורה זו
-      setIsAuthenticated(true); // עדכון הסטטוס של המשתמש
-      setUserPhone(phone); // עדכון האימייל של המשתמש
+      localStorage.setItem('userPhone', phone); 
+      setIsAuthenticated(true); 
+      setUserPhone(phone); 
       navigate('/dashboard');
 
     } catch (error) {

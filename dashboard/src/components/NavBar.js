@@ -1,12 +1,11 @@
-// NavBar.js
 import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
-import { useNavigate } from 'react-router-dom';  // תיקון הייבוא
+import { useNavigate } from 'react-router-dom';  
 
 function NavBar() {
   const location = useLocation();
-  const navigate = useNavigate();  // הוספת useNavigate
+  const navigate = useNavigate();  
   const { isAuthenticated, user, setIsAuthenticated, setUserPhone } = useContext(UserContext);
 
   const handleLogout = () => {

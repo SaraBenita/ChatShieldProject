@@ -1,4 +1,3 @@
-// StatisticsDashboard.js
 import { useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { UserContext } from '../context/userContext';
 import StatsSummaryCard from '../components/StatsSummaryCard';

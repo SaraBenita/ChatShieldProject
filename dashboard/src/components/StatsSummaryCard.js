@@ -1,9 +1,8 @@
-// StatsSummaryCard.js
 import React from 'react';
 
 function StatsSummaryCard({ sensitiveCount, labels }) {
   if (!labels || typeof labels !== 'object') {
-    return null; // אפשר גם להחזיר ספינר/טקסט זמני
+    return null; 
   }
   const labelDisplayNames = {
     "Personal Information": "Personal Info",

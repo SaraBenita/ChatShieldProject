@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../context/userContext';
@@ -11,7 +11,7 @@ function RegisterChild() {
   const navigate = useNavigate();
 
   
-  // Prevent rendering if user is not loaded yet
+
   if (!user) {
     return (
       <div className="container mt-5">
@@ -27,13 +27,13 @@ function RegisterChild() {
     try {
       const response = await axios.post('http://localhost:5000/user/registerByExtension', {
         name,
-        phone, // child's phone
+        phone,
         password,
-        linkedPhones: [user.phone], // parent phone as array
+        linkedPhones: [user.phone], 
         privacyAccepted: false,
         registrationDate: new Date()
       });
-      await refreshUser(); // <-- refresh user context!
+      await refreshUser(); 
       alert('Child registered successfully!');
     } catch (error) {
       alert('Registration failed: ' + (error.response?.data?.message || error.message));

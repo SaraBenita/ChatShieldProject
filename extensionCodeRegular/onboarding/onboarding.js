@@ -1,20 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // מחיקת הטוקן מ-localStorage
     chrome.storage.sync.remove('token', function () {
         console.log('Token removed successfully!');
     });
-    // הפניה לעמוד התחברות
     switchTab('login');
 
-    // טאבים
     document.getElementById('loginTab').addEventListener('click', () => switchTab('login'));
     document.getElementById('registerTab').addEventListener('click', () => switchTab('register'));
 
-    // כפתורים
     document.getElementById('loginButton').addEventListener('click', handleLogin);
     document.getElementById('registerButton').addEventListener('click', handleRegister);
 
-    // מודל תנאים
     const modal = document.getElementById('termsModal');
     const termsLink = document.getElementById('termsLink');
     const closeBtn = document.querySelector('.close');
@@ -40,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.style.display = 'none';
     });
 
-    // הוספת טלפונים מקושרים
     const addPhoneBtn = document.getElementById('addPhoneButton');
     addPhoneBtn.addEventListener('click', function () {
         const container = document.getElementById('linkedPhonesContainer');
@@ -76,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(phoneWrapper);
     });
 
-    // Tooltip על הצ'קבוקס
     const checkboxWrapper = document.querySelector('.checkbox-wrapper');
     checkboxWrapper.addEventListener('mouseover', () => {
         if (privacyCheckbox.disabled) {
@@ -208,7 +201,7 @@ async function sendUserDataToServerLogin(phone, password) {
         });
 
         if (!response.ok) {
-            console.log(response);  // <--- תוסיפי את זה
+            console.log(response); 
 
             const error = await response.json();
             alert(error.message);

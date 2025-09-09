@@ -1,4 +1,3 @@
-// מוניטור ברקע של הודעות שנשלחו
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.get(['userLoggedIn', 'userEmail'], function(result) {
         if (!result.userLoggedIn) {
@@ -16,29 +15,27 @@ function isUserLoggedIn() {
     return new Promise((resolve) => {
         chrome.storage.sync.get(['token'], function (result) {
             console.log('Token retrieved:', result.token);
-            resolve(result.token || null); // מחזיר את הטוקן אם קיים, אחרת null
+            resolve(result.token || null); 
         });
     });
 }
 
-// מאזין להודעות שמגיעות מ-content script
 chrome.runtime.onMessage.addListener(async (messageInfo, sender, sendResponse) => {
-    const token = await isUserLoggedIn(); // מחכה לתוצאה של isUserLoggedIn ומקבל את הטוקן
+    const token = await isUserLoggedIn(); 
 
     if (!token) {
         console.log('User is not logged in. Notifications are disabled.');
-        return; // אם המשתמש לא מחובר, לא מבצעים כלום
+        return; 
     }
 
     if (messageInfo.type === 'messageSent') {
         console.log('Message sent: ', messageInfo.text);
 
-        // שליחה של ההודעה לשרת לצורך ניתוח 
            fetch("http://host.docker.internal:5000/messages/send", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // הוספת הטוקן לכותרת Authorization
+                    "Authorization": `Bearer ${token}` 
                 },
                 body: JSON.stringify(messageInfo)
             })

@@ -10,7 +10,6 @@ async function registerUserByExtension(req, res) {
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
 
     try {
-        // בדיקה אם המשתמש כבר קיים לפי phone
         const existingUser = await User.findOne({ phone: user.phone });
 
         if (existingUser) {
@@ -18,17 +17,14 @@ async function registerUserByExtension(req, res) {
                 return res.status(400).json({ message: 'Phone number already registered' });
             }
             else {
-                // אם המשתמש כבר רשום דרך Dashboard, נוסיף את "Extension" לרשימת registeredVia
                 existingUser.registeredVia.push("Extension");
-                //existingUser.linkedPhones = [...new Set([...existingUser.linkedPhones, ...user.linkedPhones])]; // הוספת טלפונים מבלי כפילויות
                 existingUser.linkedPhones.push(user.linkedPhones);
-                existingUser.privacyAccepted = user.privacyAccepted; // עדכון הסכמה לפרטיות
+                existingUser.privacyAccepted = user.privacyAccepted; 
                 await existingUser.save();
                 return res.status(200).json({ message: 'User added to Extension successfully' });
             }
         }
 
-        // יצירת משתמש חדש
         const newUser = new User({
             name: user.name,
             phone: user.phone,
@@ -52,7 +48,6 @@ async function loginUserByExtension(req, res) {
     console.log(phone);
 
     try {
-        // בדיקת משתמש לפי phone
         const user = await User.findOne({ phone });
 
         if (!user) {
@@ -68,7 +63,6 @@ async function loginUserByExtension(req, res) {
             return res.status(401).json({ message: 'Invalid password' });
         }
 
-        // יצירת טוקן
         const token = generateToken(user);
 
         res.status(200).json({
@@ -89,7 +83,6 @@ async function registerUserByDashboard(req, res) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     try {
-        // בדיקה אם המשתמש כבר קיים
         const existingUser = await User.findOne({ phone: phone });
 
         if (existingUser) {
@@ -101,23 +94,21 @@ async function registerUserByDashboard(req, res) {
         const linkedPhonesArr = Array.isArray(linkedPhones) ? linkedPhones : (linkedPhones ? [linkedPhones] : []);
 
 
-        // יצירת משתמש חדש
         const newUser = new User({
             name: name,
             phone: phone,
             password: hashedPassword,
-            registeredVia: ["Dashboard"], // אם לא נשלח, ישמור כרשימה ריקה
+            registeredVia: ["Dashboard"], 
             linkedPhones: linkedPhonesArr,
             privacyAccepted: false,
             registrationDate: registrationDate
         });
 
         await newUser.save();
-        // יצירת טוקן
         const token = generateToken(newUser);
         res.status(200).json({
             message: 'User registered to dashboard successfully',
-            token, // שליחת הטוקן ללקוח
+            token, 
         });
 
     } catch (error) {
@@ -130,25 +121,22 @@ async function loginUserByDashboard(req, res) {
     const { phone, password } = req.body;
 
     try {
-        // בדיקת משתמש וסיסמה
         const user = await User.findOne({ phone: phone });
 
         if (!user) {
             return res.status(401).json({ message: 'phone not found in system' });
         }
 
-        // if user exist so he must have a least Extension or Dashboard registeredVia
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
 
-        // יצירת טוקן
         const token = generateToken(user);
 
         res.status(200).json({
             message: 'User logged in successfully',
-            token, // שליחת הטוקן ללקוח
+            token, 
         });
 
 
@@ -157,42 +145,6 @@ async function loginUserByDashboard(req, res) {
         res.status(500).json({ message: 'Error logging' });
     }
 }
-
-/*
-async function getUserProfile(req, res) {
-    const phone = req.query.phone;
-    try {
-        // בדיקת משתמש וסיסמה
-        const mainUser = await User.findOne({ phone: phone });
-
-        if (!mainUser) {
-            return res.status(401).json({ message: 'phone not found in system' });
-        }
-
-        // מציאת כל המשתמשים שקישרו את הפאלפון הזה
-        const allUsers = await User.find({
-            linkedPhones: phone
-        });
-
-        // החזרת המידע הרלוונטי על המשתמשים
-        const linkedUsers = allUsers.map(user => (user.phone));
-
-        res.status(200).json({
-            user: {
-                name: mainUser.name,
-                phone: mainUser.phone,
-                registeredVia: mainUser.registeredVia,
-                linkedPhones: linkedUsers
-            }
-        });
-
-
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ message: 'Error fetching user profile' });
-    }
-}
-*/
 
 async function getUserProfile(req, res) {
     const phone = req.query.phone;

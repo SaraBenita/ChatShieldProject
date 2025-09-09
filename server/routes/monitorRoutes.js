@@ -1,4 +1,3 @@
-// monitorRoutes.js
 import express from 'express';
 import { startMonitoring, stopMonitoring, getContainerStatus } from '../controllers/monitorController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
